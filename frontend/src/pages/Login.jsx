@@ -1,32 +1,22 @@
-import { useState } from "react";
+import useField from "../hooks/useField";
+import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const email = useField("email");
+  const password = useField("password");
+
+  const { login, error } = useLogin("/api/users/login");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
-    const response = await fetch("/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    const user = await response.json();
-
-    if (!response.ok) {
-      setError(user.error);
-      return;
+    await login({ email: email.value, password: password.value });
+    if (!error) {
+      console.log("success");
+      setIsAuthenticated(true);
+      navigate("/");
     }
-
-    localStorage.setItem("user", JSON.stringify(user));
-    setIsAuthenticated(true);
-    console.log("success");
-    navigate("/");
   };
 
   return (
@@ -34,11 +24,10 @@ const Login = ({ setIsAuthenticated }) => {
       <h2>Login</h2>
       <form onSubmit={handleFormSubmit}>
         <label>Email address:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input {...email} />
         <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input {...password} />
         <button>Log in</button>
-        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

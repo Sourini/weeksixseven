@@ -1,45 +1,35 @@
-import { useState } from "react";
+import useField from "../hooks/useField";
+import useSignup from "../hooks/useSignup";
 import { useNavigate } from "react-router-dom";
 
 const Signup = ({ setIsAuthenticated }) => {
   const navigate = useNavigate();
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [gender, setGender] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [accountType, setAccountType] = useState("");
-  const [error, setError] = useState(null);
+  const fullName = useField("text");
+  const email = useField("email");
+  const password = useField("password");
+  const phoneNumber = useField("text");
+  const gender = useField("text");
+  const dateOfBirth = useField("date");
+  const accountType = useField("text");
+
+  const { signup, error } = useSignup("/api/users/signup");
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-
-    const response = await fetch("/api/users/signup", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email,
-        password,
-        fullName,
-        phoneNumber,
-        gender,
-        date_of_birth: dateOfBirth,
-        accountType,
-      }),
+    await signup({
+      email: email.value,
+      password: password.value,
+      fullName: fullName.value,
+      phoneNumber: phoneNumber.value,
+      gender: gender.value,
+      date_of_birth: dateOfBirth.value,
+      accountType: accountType.value,
     });
-    const user = await response.json();
-
-    if (!response.ok) {
-      setError(user.error);
-      return;
+    if (!error) {
+      console.log("success");
+      setIsAuthenticated(true);
+      navigate("/");
     }
-
-    localStorage.setItem("user", JSON.stringify(user));
-    setIsAuthenticated(true); 
-    console.log("success");
-    navigate("/");
   };
 
   return (
@@ -47,21 +37,20 @@ const Signup = ({ setIsAuthenticated }) => {
       <h2>Sign Up</h2>
       <form onSubmit={handleFormSubmit}>
         <label>Full Name:</label>
-        <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <input {...fullName} />
         <label>Email address:</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        <input {...email} />
         <label>Password:</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <input {...password} />
         <label>Phone Number:</label>
-        <input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
+        <input {...phoneNumber} />
         <label>Gender:</label>
-        <input type="text" value={gender} onChange={(e) => setGender(e.target.value)} />
+        <input {...gender} />
         <label>Date of Birth:</label>
-        <input type="date" value={dateOfBirth} onChange={(e) => setDateOfBirth(e.target.value)} />
+        <input {...dateOfBirth} />
         <label>Account Type:</label>
-        <input type="text" value={accountType} onChange={(e) => setAccountType(e.target.value)} />
+        <input {...accountType} />
         <button>Sign up</button>
-        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );
