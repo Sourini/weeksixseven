@@ -18,7 +18,7 @@ const createProduct = async (req, res) => {
 
     const newProduct = new Product({
       ...req.body,
-      ...(user_id ? { user_id } : {}),
+      user_id,
     });
 
     await newProduct.save();
