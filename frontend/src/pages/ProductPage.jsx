@@ -31,9 +31,27 @@ const ProductPage = () => {
     <div className="product-preview">
       <h2>Product Details</h2>
     <button onClick={() => navigate("/")}>Back</button>
+    <button onClick={() => onDeleteClick(product._id)}>Delete</button>
     </div>
   );
 };
 
+const deleteProduct = async (productId) => {
+  try {
+    const res = await fetch(`/api/products/${productId}`, {
+      method: "DELETE",
+    });
+    if (!res.ok) throw new Error("Failed to delete product");
+  } catch (error) {
+    console.error("Error deleting product:", error);
+  }
+};
+
+const onDeleteClick = (productId) => {
+  const confirm = window.confirm("Are you sure you want to delete this product?");
+  if (!confirm) return;
+  deleteProduct(productId);
+  navigate("/");
+};
 
 export default ProductPage;
