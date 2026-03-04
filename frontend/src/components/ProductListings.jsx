@@ -1,9 +1,11 @@
 import ProductListing from "./ProductListing";
 
-const ProductListings = () => {
+const ProductListings = ({ products }) => {
   return (
     <div className="product-list">
-      <ProductListing />
+      {products.map((product) => (
+        <ProductListing key={product.id} product={product} />
+      ))}
     </div>
   );
 };
