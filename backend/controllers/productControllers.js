@@ -59,7 +59,34 @@ const getProductById = async (req, res) => {
 
 // PUT /api/products/:productId
 const updateProduct = async (req, res) => {
-  res.send("updateProduct");
+  const { productId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(productId)) {
+    return res.status(400).json({ message: "Invalid product ID" });
+  }
+
+  try {
+    const updatedProduct = await Product.findOneAndUpdate(
+      { _id: productId },
+      { ...req.body },
+      { returnDocument: "after", runValidators: true }
+    );
+
+    if (updatedProduct) {
+      res.status(200).json(updatedProduct);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    if (error?.name === "ValidationError") {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: Object.values(error.errors).map((e) => e.message),
+      });
+    }
+
+    res.status(500).json({ message: "Failed to update product" });
+  }
 };
 
 // DELETE /api/products/:productId
