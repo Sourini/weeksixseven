@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import EditProductPage from "./pages/EditProductPage";
 
 // pages & components
 import Home from "./pages/HomePage";
@@ -18,6 +19,7 @@ const App = () => {
             <Route path="/add-product" element={<AddProductPage />} />
             <Route path="*" element={<NotFoundPage />} />
             <Route path="/products/:id" element={<ProductPage />} />
+            <Route path="/edit-product/:id" element={<EditProductPage />} />
           </Routes>
         </div>
       </BrowserRouter>

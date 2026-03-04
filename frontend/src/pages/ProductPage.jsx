@@ -30,6 +30,7 @@ const ProductPage = () => {
   return (
     <div className="product-preview">
       <h2>Product Details</h2>
+    <button onClick={() => navigate(`/edit-product/${product._id}`)}>Edit</button>
     <button onClick={() => navigate("/")}>Back</button>
     <button onClick={() => onDeleteClick(product._id)}>Delete</button>
     </div>
