@@ -8,7 +8,28 @@ const getAllProducts = async (req, res) => {
 
 // POST /api/products
 const createProduct = async (req, res) => {
-  res.send("createProduct");
+  try {
+    const user_id = req.user?._id;
+
+    const newProduct = new Product({
+      ...req.body,
+      ...(user_id ? { user_id } : {}),
+    });
+
+    await newProduct.save();
+    res.status(201).json(newProduct);
+  } catch (error) {
+    console.error("Error creating product:", error);
+
+    if (error?.name === "ValidationError") {
+      return res.status(400).json({
+        message: "Validation failed",
+        errors: Object.values(error.errors).map((e) => e.message),
+      });
+    }
+
+    res.status(500).json({ error: "Server Error" });
+  }
 };
 
 // GET /api/products/:productId
