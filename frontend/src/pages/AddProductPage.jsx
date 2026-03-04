@@ -75,7 +75,7 @@ const AddProductPage = () => {
           <option value="true">Yes</option>
           <option value="false">No</option>
         </select>
-        <button>Add Product</button>
+        <button>Add a New Product</button>
       </form>
     </div>
   );
