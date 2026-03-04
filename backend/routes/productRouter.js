@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const authenticate = require('../middleware/requireAuth');
 const {
   getAllProducts,
   createProduct,
@@ -7,15 +8,19 @@ const {
   updateProduct,
   deleteProduct,
 } = require('../controllers/productControllers');
+const requireAuth = require('../middleware/requireAuth');
 
 // GET /api/products
 router.get('/', getAllProducts);
 
-// POST /api/products
-router.post('/', createProduct);
-
 // GET /api/products/:productId
 router.get('/:productId', getProductById);
+
+// Apply authentication middleware to all routes below
+router.use(requireAuth); 
+
+// POST /api/products
+router.post('/', createProduct);
 
 // PUT /api/products/:productId
 router.put('/:productId', updateProduct);
