@@ -1,5 +1,8 @@
 import { useNavigate } from "react-router-dom";
 
+const user = JSON.parse(localStorage.getItem("user"));
+const token = user ? user.token : null;
+
 const AddProductPage = () => {
   const navigate = useNavigate();
   const submitForm = (e) => {
@@ -31,16 +34,21 @@ const AddProductPage = () => {
   const [contactPhone, setContactPhone] = useState("");
   const [isVerified, setIsVerified] = useState("true");
 
-  const addProduct = async (newProduct) => {
+const addProduct = async (newProduct) => {
   try {
     const res = await fetch("/api/products", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
       body: JSON.stringify(newProduct),
     });
     if (!res.ok) throw new Error("Failed to add product");
+    return true;
   } catch (error) {
-    console.error(error);
+    console.error("Error adding product:", error);
+    return false;
   }
 };
 

@@ -2,6 +2,9 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 
+const user = JSON.parse(localStorage.getItem("user"));
+const token = user ? user.token : null;
+
 const EditProductPage = () => {
   return (
     <div className="create">
@@ -27,12 +30,15 @@ useEffect(() => {
   fetchProduct();
 }, [id]);
 
-const updateProduct = async (updatedProduct) => {
+const updateProduct = async (product) => {
   try {
     const res = await fetch(`/api/products/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(updatedProduct),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(product),
     });
     if (!res.ok) throw new Error("Failed to update product");
     return true;
