@@ -18,11 +18,11 @@ const userSchema = new Schema(
       required: true,
     },
     phoneNumber: {
-      type: Number,
+      type: String,
       required: true,
     },
     gender: {
-      type: Number,
+      type: String,
       required: true,
     },
     date_of_birth: {
@@ -42,7 +42,7 @@ userSchema.set('toJSON', {
   virtuals: true,
   transform: (doc, ret) => {
     ret.id = ret._id;
-    delete ret._id;
+    //delete ret._id;
     return ret;
   }
 });

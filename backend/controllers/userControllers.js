@@ -1,7 +1,3 @@
-generateToken
-signupUser
-loginUser
-
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
@@ -18,20 +14,20 @@ const generateToken = (_id) => {
 // @access  Public
 const signupUser = async (req, res) => {
   const {
-    name,
+    fullName,
     email,
     password,
-    phone_number,
+    phoneNumber,
     gender,
     date_of_birth,
     accountType,
   } = req.body;
   try {
     if (
-      !name ||
+      !fullName ||
       !email ||
       !password ||
-      !phone_number ||
+      !phoneNumber ||
       !gender ||
       !date_of_birth ||
       !accountType
@@ -53,10 +49,10 @@ const signupUser = async (req, res) => {
 
     // Create user
     const user = await User.create({
-      name,
+      fullName,
       email,
       password: hashedPassword,
-      phone_number,
+      phoneNumber,
       gender,
       date_of_birth,
       accountType,
